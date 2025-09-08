@@ -1,0 +1,312 @@
+<section class="section">
+
+    <div class="col-md-12  ">
+        <div class="card w-full">
+            
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#tous" role="tab"
+                            aria-controls="home" aria-selected="true">Tous</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#traitee" role="tab" aria-controls="profile"
+                            aria-selected="false">Deja traite</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#enCours" role="tab"
+                            aria-controls="contact" aria-selected="false">En cours de traitement</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#enAttente" role="tab" aria-controls="profile"
+                            aria-selected="false">En attente</a>
+                    </li>
+                </ul>
+                <!-- contenu -->
+                <div class="tab-content" id="myTabContent">
+                    <!-- tous -->
+                    <div class="tab-pane fade show active" id="tous" role="tabpanel" aria-labelledby="home-tab"> 
+                        <p></p>
+                        <section class="section">
+                            <div class="row" id="table-hover-row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Tous les signalements</h4>
+                                        </div>
+                                        <div class="card-content">
+                                            
+                                            <!-- Loading spinner -->
+                                            <div *ngIf="loading" class="text-center p-4">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Chargement...</span>
+                                                </div>
+                                                <p class="mt-2">Chargement des signalements...</p>
+                                            </div>
+
+                                            <!-- Error message -->
+                                            <div *ngIf="error" class="alert alert-danger m-3" role="alert">
+                                                {{ error }}
+                                            </div>
+
+                                            <!-- table hover -->
+                                            <div *ngIf="!loading && !error" class="table-responsive">
+                                                <table class="table table-hover mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>CODE</th>
+                                                            <th>TITRE</th>
+                                                            <th>TYPE DE SERVICE</th>
+                                                            <th>STATUT</th>
+                                                            <th>PRIORITÉ</th>
+                                                            <th>LOCALISATION</th>
+                                                            <th>ACTIONS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let signalement of signalements">
+                                                            <td class="text-bold-500">{{ signalement.code }}</td>
+                                                            <td>{{ signalement.titre }}</td>
+                                                            <td>{{ signalement.typeService }}</td>
+                                                            <td>
+                                                                <span [ngClass]="getStatusClass(signalement.statut)">
+                                                                    {{ getStatusText(signalement.statut) }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge" 
+                                                                      [ngClass]="signalement.priorite >= 3 ? 'bg-danger' : signalement.priorite >= 2 ? 'bg-warning' : 'bg-success'">
+                                                                    {{ signalement.priorite }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-bold-500">
+                                                                <button class="btn btn-sm btn-outline-info">
+                                                                    <i class="bi bi-geo-alt"></i> Voir
+                                                                </button>
+                                                            </td>
+                                                            <td class="d-flex gap-2">
+                                                                <button 
+                                                                  [routerLink]="['../s-details', signalement.trackingId]" 
+                                                                  class="badge bg-light-primary" 
+                                                                  style="cursor: pointer;">
+                                                                    Gérer
+                                                                </button>
+                                                                <button (click)="deleteSignalement(signalement.trackingId)" 
+                                                                        class="badge bg-light-danger" 
+                                                                        style="cursor: pointer;">
+                                                                    Supprimer
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr *ngIf="signalements.length === 0 && !loading">
+                                                            <td colspan="7" class="text-center text-muted py-4">
+                                                                Aucun signalement trouvé
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                       
+                    </div>
+
+                    <div class="tab-pane fade" id="traitee" role="tabpanel" aria-labelledby="profile-tab">
+                        <section class="section">
+                            <div class="row" id="table-hover-row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Signalements traités</h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>CODE</th>
+                                                            <th>TITRE</th>
+                                                            <th>TYPE DE SERVICE</th>
+                                                            <th>STATUT</th>
+                                                            <th>PRIORITÉ</th>
+                                                            <th>LOCALISATION</th>
+                                                            <th>ACTIONS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let signalement of getSignalementsByStatus('traité')">
+                                                            <td class="text-bold-500">{{ signalement.code }}</td>
+                                                            <td>{{ signalement.titre }}</td>
+                                                            <td>{{ signalement.typeService }}</td>
+                                                            <td>
+                                                                <span [ngClass]="getStatusClass(signalement.statut)">
+                                                                    {{ getStatusText(signalement.statut) }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-success">{{ signalement.priorite }}</span>
+                                                            </td>
+                                                            <td class="text-bold-500">
+                                                                <button class="btn btn-sm btn-outline-info">
+                                                                    <i class="bi bi-geo-alt"></i> Voir
+                                                                </button>
+                                                            </td>
+                                                            <td class="d-flex gap-2">
+                                                                <button [routerLink]="['../s-details']" 
+                                                                        [queryParams]="{id: signalement.serviceId}" 
+                                                                        class="badge bg-light-primary" 
+                                                                        style="cursor: pointer;">
+                                                                    Voir détails
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr *ngIf="getSignalementsByStatus('traité').length === 0">
+                                                            <td colspan="7" class="text-center text-muted py-4">
+                                                                Aucun signalement traité
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="tab-pane fade" id="enCours" role="tabpanel" aria-labelledby="profile-tab">
+                        <section class="section">
+                            <div class="row" id="table-hover-row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Signalements en cours</h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>CODE</th>
+                                                            <th>TITRE</th>
+                                                            <th>TYPE DE SERVICE</th>
+                                                            <th>STATUT</th>
+                                                            <th>PRIORITÉ</th>
+                                                            <th>LOCALISATION</th>
+                                                            <th>ACTIONS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let signalement of getSignalementsByStatus('en cours')">
+                                                            <td class="text-bold-500">{{ signalement.code }}</td>
+                                                            <td>{{ signalement.titre }}</td>
+                                                            <td>{{ signalement.typeService }}</td>
+                                                            <td>
+                                                                <span [ngClass]="getStatusClass(signalement.statut)">
+                                                                    {{ getStatusText(signalement.statut) }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-warning">{{ signalement.priorite }}</span>
+                                                            </td>
+                                                            <td class="text-bold-500">
+                                                                <button class="btn btn-sm btn-outline-info">
+                                                                    <i class="bi bi-geo-alt"></i> Voir
+                                                                </button>
+                                                            </td>
+                                                            <td class="d-flex gap-2">
+                                                                <button [routerLink]="['../s-details']" 
+                                                                        [queryParams]="{id: signalement.serviceId}" 
+                                                                        class="badge bg-light-primary" 
+                                                                        style="cursor: pointer;">
+                                                                    Gérer
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr *ngIf="getSignalementsByStatus('en cours').length === 0">
+                                                            <td colspan="7" class="text-center text-muted py-4">
+                                                                Aucun signalement en cours
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="tab-pane fade" id="enAttente" role="tabpanel" aria-labelledby="contact-tab">
+                        <section class="section">
+                            <div class="row" id="table-hover-row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Signalements en attente</h4>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>CODE</th>
+                                                            <th>TITRE</th>
+                                                            <th>TYPE DE SERVICE</th>
+                                                            <th>STATUT</th>
+                                                            <th>PRIORITÉ</th>
+                                                            <th>LOCALISATION</th>
+                                                            <th>ACTIONS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let signalement of getSignalementsByStatus('en attente')">
+                                                            <td class="text-bold-500">{{ signalement.code }}</td>
+                                                            <td>{{ signalement.titre }}</td>
+                                                            <td>{{ signalement.typeService }}</td>
+                                                            <td>
+                                                                <span [ngClass]="getStatusClass(signalement.statut)">
+                                                                    {{ getStatusText(signalement.statut) }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-info">{{ signalement.priorite }}</span>
+                                                            </td>
+                                                            <td class="text-bold-500">
+                                                                <button class="btn btn-sm btn-outline-info">
+                                                                    <i class="bi bi-geo-alt"></i> Voir
+                                                                </button>
+                                                            </td>
+                                                            <td class="d-flex gap-2">
+                                                                <button [routerLink]="['../s-details']" 
+                                                                        [queryParams]="{id: signalement.serviceId}" 
+                                                                        class="badge bg-light-primary" 
+                                                                        style="cursor: pointer;">
+                                                                    Gérer
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr *ngIf="getSignalementsByStatus('en attente').length === 0">
+                                                            <td colspan="7" class="text-center text-muted py-4">
+                                                                Aucun signalement en attente
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

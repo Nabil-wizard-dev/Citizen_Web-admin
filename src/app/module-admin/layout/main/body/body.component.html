@@ -1,0 +1,75 @@
+<div class="page-heading">
+  <div class="page-title">
+    <div class="row">
+      <div class="col-12 col-md-6 order-md-1 order-last mb-3">
+        <h3>
+
+          @switch (currentUrl) {
+          @case ("/admin/dashboard") {
+          Dash
+          }
+          @case ("/admin/signalement") {
+          Signalement
+          }
+          @case ("/admin/addSignalement") {
+           Signalement
+          }
+          @case ("/admin/addOuvrier") {
+          Personnel Ouvrier
+          }
+          @case ("/admin/addAutority") {
+          Personnel Autoritaire
+          }
+          @case ("/admin/s-details/6c2cf7de-c55a-4d9b-a2fa-58eebe4129c1") {
+          detaille signalement
+          }
+          @default {
+          page actuelle
+          }
+          }
+
+        </h3>
+
+      </div>
+      <div class="col-12 col-md-6 order-md-2 order-first">
+
+        <!-- navigation -->
+        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a routerLink="/admin/dashboard">Tableau de bord</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+
+              @switch (currentUrl) {
+              @case ("/admin/dashboard") {
+              Dash
+              }
+              @case ("/admin/signalement") {
+              Signalements
+              }
+              @case ("/admin/addSignalement") {
+              nouveau signalement
+              }
+              @case ("/admin/addOuvrier") {
+              Ajouter ouvrier
+              }
+              @case ("/admin/addAutority") {
+              Ajouter autorite
+              }
+              @default {
+              page actuelle
+              }
+              }
+            </li>
+          </ol>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+  <section class="section">
+
+    <!-- router outlet -->
+    <router-outlet> </router-outlet>
+
+  </section>
+</div>

@@ -1,0 +1,81 @@
+<section class="section">
+   <div class="col-md-12">
+      <div class="card w-full">
+         <div class="card-header">
+            <h5 class="card-title">Horizontal Navs</h5>
+         </div>
+         <div class="card-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+               <li class="nav-item" role="presentation">
+                  <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#Generalités" role="tab"
+                     aria-controls="home" aria-selected="true">Generalités</a>
+               </li>
+               <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#composentes" role="tab"
+                     aria-controls="profile" aria-selected="false">Composentes</a>
+               </li>
+               <li class="nav-item" role="presentation">
+                  <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#timeline" role="tab"
+                     aria-controls="contact" aria-selected="false">Timeline</a>
+               </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+               <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+                  <div class="card mt-4">
+                     <div class="card-header bg-primary text-white">
+                        <h5>Rapports à valider</h5>
+                     </div>
+                     <div class="card-body">
+                        <div *ngIf="tachesAValider.length === 0" class="text-muted">Aucun rapport en attente de
+                           validation.</div>
+                        <div *ngFor="let tache of tachesAValider" class="mb-3 border-bottom pb-3">
+                           <div class="d-flex align-items-center justify-content-between">
+                              <div>
+                                 <b>Ouvrier :</b> {{ tache.ouvrierNom || 'N/A' }}<br>
+                                 <b>Date début :</b> {{ tache.dateDebut | date:'short' }}<br>
+                                 <b>PDF :</b>
+                                 <a *ngIf="tache.fichierDevis" [href]="tache.fichierDevis" target="_blank">Ouvrir le
+                                    rapport</a>
+                                 <span *ngIf="!tache.fichierDevis" class="text-danger">Aucun PDF</span>
+                              </div>
+                              <div class="d-flex gap-2">
+                                 <button class="btn btn-success" (click)="validerRapport(tache)">Valider</button>
+                                 <button class="btn btn-danger" (click)="rejeterRapport(tache)">Rejeter</button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+
+               </div>
+               <div class="tab-pane fade" id="composentes" role="tabpanel" aria-labelledby="profile-tab">
+                  <nz-collapse [nzAccordion]="true">
+                     <nz-collapse-panel *ngFor="let item of etatsDeTache; let i = index"
+                        [nzHeader]="'État de tâche ' + (i+1)" [nzActive]="i === 0">
+
+                        <div class="d-flex gap-3">
+                           <hr class="vertical-divider ">
+                           <div>
+                              <h4>État de tâche {{(i+1)}}</h4>
+                              <p>{{item.description}}</p>
+                           </div>
+                        </div>
+                     </nz-collapse-panel>
+                  </nz-collapse>
+               </div>
+               <div class="tab-pane fade" id="timeline" role="tabpanel" aria-labelledby="contact-tab">
+                  <br>
+                  <nz-timeline nzMode="alternate" [nzReverse]="true" [nzPending]="'Chargement en cours...'">
+                     <nz-timeline-item *ngFor="let etat of etatsDeTache; let i = index" nzLabel="2025-02-11"
+                        nzColor="blue">
+                        {{ etat.description }}
+                     </nz-timeline-item>
+                  </nz-timeline>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>

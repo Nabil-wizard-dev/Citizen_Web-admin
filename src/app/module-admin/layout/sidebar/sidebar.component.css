@@ -1,0 +1,14 @@
+/* Affiche le sous-menu quand le parent a la classe 'open' */
+.sidebar-item.has-sub.open > .submenu {
+  display: block !important;
+}
+
+/* Cache le sous-menu par défaut */
+.sidebar-item.has-sub > .submenu {
+  display: none;
+}
+
+.sidebar-header .logo img {
+  width: 150px; /* Vous pouvez ajuster cette valeur */
+  height: auto;
+}

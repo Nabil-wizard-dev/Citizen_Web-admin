@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+footer, :host {
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
+}

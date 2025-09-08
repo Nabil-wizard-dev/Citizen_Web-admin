@@ -1,0 +1,7 @@
+.vertical-divider {
+   width: 2px;
+   background-color: #7a7c7f;
+   height: 25rem ;/* ou 100% si le parent a une hauteur définie */
+   align-self: stretch;
+   margin: 0 1rem;
+ }

@@ -1,0 +1,153 @@
+<div id="sidebar" class="active">
+  <div class="sidebar-wrapper active">
+    <div class="sidebar-header">
+      <div class="d-flex justify-content-between">
+        <div class="logo">
+          <a routerLink="./admin/dashboard"><img src="assets/images/logo/logo.png" alt="Logo" srcset="" /></a>
+        </div>
+        <div class="toggler">
+          <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-menu">
+      <ul class="menu">
+        <li class="sidebar-title">Menu</li>
+
+        <li class="sidebar-item">
+          <a routerLink="./dashboard" class="sidebar-link">
+            <i class="bi bi-grid-fill"></i>
+            <span>Tableau de bord</span>
+          </a>
+        </li>
+
+
+        <!-- signalement -->
+        <li class="sidebar-item has-sub" [ngClass]="{'open': isSubmenuOpen('signalement')}">
+          <a role="button" class="sidebar-link" (click)="toggleSubmenu('signalement')">
+            <i class="bi bi-bug-fill"></i>
+            <span>Signalements</span>
+          </a>
+          <ul class="submenu" *ngIf="isSubmenuOpen('signalement')">
+            <!-- add signalement -->
+            <a routerLink="./addSignalement" class="sidebar-link">
+              <i class="bi bi-file-earmark-plus"></i>
+              <span>Ajouter</span>
+            </a>
+
+            <!-- Bibliotheque signalement -->
+            <a routerLink="./signalement" class="sidebar-link">
+              <i class="bi bi-file-earmark-plus"></i>
+              <span>Les signalements</span>
+            </a>
+
+            <!-- Devis -->
+            <a routerLink="./devis" class="sidebar-link">
+              <i class="bi bi-file-pdf"></i>
+              <span>Les Devis</span>
+            </a>
+
+          </ul>
+        </li>
+
+        <!-- communication -->
+        <li class="sidebar-item has-sub" [ngClass]="{'open': isSubmenuOpen('communication')}">
+          <a role="button" class="sidebar-link" (click)="toggleSubmenu('communication')">
+            <i class="bi bi-newspaper"></i>
+            <span>Communication</span>
+          </a>
+          <ul class="submenu" *ngIf="isSubmenuOpen('communication')">
+            <li class="submenu-item">
+              <a>Dictionnaire</a>
+            </li>
+            <li class="submenu-item">
+              <a>Ajouter annonce</a>
+            </li>
+            <li class="submenu-item">
+              <a>chat</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- personnel d'intervention -->
+        <li class="sidebar-item has-sub" [ngClass]="{'open': isSubmenuOpen('personnel')}">
+          <a role="button" class="sidebar-link" (click)="toggleSubmenu('personnel')">
+            <i class="bi bi-person-fill"></i>
+            <span>Personnel</span>
+          </a>
+          <ul class="submenu" *ngIf="isSubmenuOpen('personnel')">
+
+            <!-- add autorite -->
+            <a routerLink="./addAutority" class="sidebar-link">
+              <i class="bi bi-person-plus"></i>
+              <span>ajouter autoriter</span>
+            </a>
+
+            <!-- add ouvirer -->
+            <a routerLink="./addOuvrier" class="sidebar-link">
+              <i class="bi bi-person-plus"></i>
+              <span>ajouter ouvrier</span>
+            </a>
+
+            <!-- <li class="submenu-item">
+              <a>Agenda</a>
+            </li>
+            <li class="submenu-item">
+              <a>Traitement</a>  
+            </li>
+
+            <li class="submenu-item">
+              <a>Suivi/visionnage</a>
+            </li> -->
+          </ul>
+        </li>
+
+
+        <!-- services  -->
+        <li class="sidebar-item has-sub" [ngClass]="{'open': isSubmenuOpen('services')}">
+          <a role="button" class="sidebar-link" (click)="toggleSubmenu('services')">
+            <i class="bi bi-stack"></i>
+            <span>Services</span>
+          </a>
+          <ul class="submenu" *ngIf="isSubmenuOpen('services')">
+            <li class="submenu-item">
+              <a>Dictionnaire</a>
+            </li>
+            <li class="submenu-item">
+              <a>Traitement</a>
+            </li>
+            <li class="submenu-item">
+              <a>Suivi/visionnage</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- parametres  -->
+        <li class="sidebar-item has-sub" [ngClass]="{'open': isSubmenuOpen('parametres')}">
+          <a role="button" class="sidebar-link" (click)="toggleSubmenu('parametres')">
+            <i class="bi bi-sliders"></i>
+            <span>Parametres</span>
+          </a>
+          <ul class="submenu" *ngIf="isSubmenuOpen('parametres')">
+            <li class="submenu-item">
+              <a routerLink="./profile">Mon Profile</a>
+            </li>
+            <li class="submenu-item">
+              <a routerLink="./profile">Modifier Profile</a>
+            </li>
+          </ul>
+        </li>
+
+        <hr>
+
+        <li class="sidebar-item" role="button">
+          <a class="sidebar-link" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Deconnexion </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+  </div>
+</div>

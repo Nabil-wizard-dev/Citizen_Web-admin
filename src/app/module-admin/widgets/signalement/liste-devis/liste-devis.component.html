@@ -1,0 +1,349 @@
+<section class="section">
+    <div class="col-md-12">
+        <div class="card w-full">
+            <div class="card-body">
+                <div class="divider">
+                    <div class="divider-text card-title">
+                        <i class="fas fa-file-pdf me-2"></i>
+                        Gestion des Documents par Signalement
+                    </div>
+                </div>
+
+                <!-- Filtre par signalement -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="signalementSelect" class="form-label fw-bold text-primary">
+                            <i class="fas fa-filter me-2"></i>
+                            Sélectionner un Signalement
+                        </label>
+                        <select id="signalementSelect" class="form-select" [(ngModel)]="selectedSignalementId"
+                            (change)="onSignalementChange()">
+                            <option value="">Sélectionner un signalement</option>
+                            <option *ngFor="let signalement of signalements" [value]="signalement.trackingId">
+                                {{ signalement.titre }} - {{ signalement.code }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Contenu du signalement sélectionné -->
+                <div *ngIf="selectedSignalementId && selectedSignalement" class="signalement-content">
+                    <!-- Informations du signalement -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        {{ selectedSignalement.titre }}
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Code:</strong> {{ selectedSignalement.code }}</p>
+                                            <p><strong>Statut:</strong>
+                                                <span class="badge"
+                                                    [ngClass]="getStatusBadgeClass(selectedSignalement.statut)">
+                                                    {{ selectedSignalement.statut }}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Type:</strong> {{ selectedSignalement.typeService }}</p>
+                                            <p><strong>Priorité:</strong> {{ selectedSignalement.priorite }}</p>
+                                        </div>
+                                    </div>
+                                    <p><strong>Description:</strong> {{ selectedSignalement.description }}</p>
+
+                                    <!-- Boutons d'action pour le signalement -->
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="d-flex gap-2 flex-wrap">
+                                                <!-- Bouton Activer (seulement si EN_ATTENTE) -->
+                                                <button *ngIf="selectedSignalement.statut === 'EN_ATTENTE'"
+                                                    class="btn btn-primary"
+                                                    (click)="activerSignalement(selectedSignalement.trackingId)">
+                                                    <i class="fas fa-play me-2"></i>
+                                                    Activer
+                                                </button>
+
+                                                <!-- Bouton Rejeter (seulement si EN_ATTENTE) -->
+                                                <button *ngIf="selectedSignalement.statut === 'EN_ATTENTE'"
+                                                    class="btn btn-danger"
+                                                    (click)="rejeterSignalement(selectedSignalement.trackingId)">
+                                                    <i class="fas fa-times me-2"></i>
+                                                    Rejeter
+                                                </button>
+
+                                                <!-- Bouton Finaliser (seulement si EN_COURS) -->
+                                                <button *ngIf="selectedSignalement.statut === 'EN_COURS'"
+                                                    class="btn btn-success"
+                                                    (click)="finaliserSignalement(selectedSignalement.trackingId)">
+                                                    <i class="fas fa-check-circle me-2"></i>
+                                                    Finaliser l'Affaire
+                                                </button>
+
+                                                <!-- Bouton Archiver (seulement si TRAITE) -->
+                                                <button *ngIf="selectedSignalement.statut === 'TRAITE'"
+                                                    class="btn btn-secondary"
+                                                    (click)="archiverSignalement(selectedSignalement.trackingId)">
+                                                    <i class="fas fa-archive me-2"></i>
+                                                    Archiver
+                                                </button>
+
+                                                <!-- Indicateur de statut final -->
+                                                <div *ngIf="selectedSignalement.statut === 'REJETE'"
+                                                    class="alert alert-danger mb-0">
+                                                    <i class="fas fa-ban me-2"></i>
+                                                    Signalement rejeté
+                                                </div>
+
+                                                <div *ngIf="selectedSignalement.statut === 'ARCHIVE'"
+                                                    class="alert alert-secondary mb-0">
+                                                    <i class="fas fa-archive me-2"></i>
+                                                    Signalement archivé
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Onglets pour Devis et Rapports -->
+                    <ul class="nav nav-tabs" id="documentTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="devis-tab" data-bs-toggle="tab"
+                                data-bs-target="#devis-content" type="button" role="tab" aria-controls="devis-content"
+                                aria-selected="true">
+                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                Devis ({{ devis.length }})
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="rapports-tab" data-bs-toggle="tab"
+                                data-bs-target="#rapports-content" type="button" role="tab"
+                                aria-controls="rapports-content" aria-selected="false">
+                                <i class="fas fa-clipboard-check text-info me-2"></i>
+                                Rapports d'Avancement ({{ rapports.length }})
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="documentTabsContent">
+                        <!-- Onglet Devis -->
+                        <div class="tab-pane fade show active" id="devis-content" role="tabpanel"
+                            aria-labelledby="devis-tab">
+                            <div class="mt-3">
+                                <!-- Loading state -->
+                                <div *ngIf="isLoading" class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Chargement...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">Chargement des devis...</p>
+                                </div>
+
+                                <!-- Error state -->
+                                <div *ngIf="errorMessage && !isLoading" class="alert alert-warning" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    {{ errorMessage }}
+                                </div>
+
+                                <!-- Empty state -->
+                                <div *ngIf="!isLoading && !errorMessage && devis.length === 0" class="text-center py-4">
+                                    <i class="fas fa-file-pdf fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">Aucun devis disponible</h5>
+                                    <p class="text-muted">Aucun devis n'a été créé pour ce signalement.</p>
+                                </div>
+
+                                <!-- Devis list -->
+                                <div *ngIf="!isLoading && devis.length > 0" class="devis-list">
+                                    <div class="row">
+                                        <div *ngFor="let devisItem of devis; trackBy: trackByDevisId"
+                                            class="col-md-6 col-lg-4 mb-3">
+                                            <div class="card devis-card h-100">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-start justify-content-between mb-3">
+                                                        <div class="devis-icon">
+                                                            <i class="fas fa-file-pdf text-danger fa-2x"></i>
+                                                        </div>
+                                                        <div class="devis-status">
+                                                            <span class="badge bg-success">Devis</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <h6 class="card-title text-truncate" [title]="devisItem.titre">
+                                                        {{ devisItem.titre || 'Devis sans titre' }}
+                                                    </h6>
+
+                                                    <div class="devis-info">
+                                                        <div class="info-item">
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-calendar me-1"></i>
+                                                                Créé le {{ formatDate(devisItem.dateCreation) }}
+                                                            </small>
+                                                        </div>
+
+                                                        <div class="info-item">
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-user me-1"></i>
+                                                                Ouvrier: {{ devisItem.ouvrierId | slice:0:8 }}...
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mt-3 d-flex gap-2">
+                                                        <button *ngIf="selectedSignalement.statut === 'EN_ATTENTE'"
+                                                            class="btn btn-success btn-sm"
+                                                            (click)="activerSignalement(devisItem.signalementId)">
+                                                            <i class="fas fa-check"></i> Activer
+                                                        </button>
+                                                        <button *ngIf="selectedSignalement.statut === 'EN_ATTENTE'"
+                                                            class="btn btn-danger btn-sm"
+                                                            (click)="rejeterSignalement(devisItem.signalementId)">
+                                                            <i class="fas fa-times"></i> Rejeter
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="mt-3">
+                                                        <button class="btn btn-primary btn-sm w-100"
+                                                            (click)="downloadDevis(devisItem.trackingId, devisItem.titre)"
+                                                            [disabled]="isLoading">
+                                                            <i class="fas fa-download me-2"></i>
+                                                            Télécharger PDF
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Onglet Rapports -->
+                        <div class="tab-pane fade" id="rapports-content" role="tabpanel" aria-labelledby="rapports-tab">
+                            <div class="mt-3">
+                                <!-- Loading state -->
+                                <div *ngIf="isLoadingRapports" class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Chargement...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">Chargement des rapports...</p>
+                                </div>
+
+                                <!-- Error state -->
+                                <div *ngIf="errorMessageRapports && !isLoadingRapports" class="alert alert-warning"
+                                    role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    {{ errorMessageRapports }}
+                                </div>
+
+                                <!-- Empty state -->
+                                <div *ngIf="!isLoadingRapports && !errorMessageRapports && rapports.length === 0"
+                                    class="text-center py-4">
+                                    <i class="fas fa-clipboard-check fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">Aucun rapport disponible</h5>
+                                    <p class="text-muted">Aucun rapport d'avancement n'a été créé pour ce signalement.
+                                    </p>
+                                </div>
+
+                                <!-- Rapports list -->
+                                <div *ngIf="!isLoadingRapports && rapports.length > 0" class="rapports-list">
+                                    <div class="row">
+                                        <div *ngFor="let rapportItem of rapports; trackBy: trackByRapportId"
+                                            class="col-md-6 col-lg-4 mb-3">
+                                            <div class="card rapport-card h-100">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-start justify-content-between mb-3">
+                                                        <div class="rapport-icon">
+                                                            <i class="fas fa-clipboard-check text-info fa-2x"></i>
+                                                        </div>
+                                                        <div class="rapport-status">
+                                                            <span class="badge bg-info">Rapport</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <h6 class="card-title text-truncate" [title]="rapportItem.titre">
+                                                        {{ rapportItem.titre || 'Rapport sans titre' }}
+                                                    </h6>
+
+                                                    <div class="rapport-info">
+                                                        <div class="info-item">
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-calendar me-1"></i>
+                                                                Créé le {{ formatDate(rapportItem.dateCreation) }}
+                                                            </small>
+                                                        </div>
+
+                                                        <div class="info-item">
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-user me-1"></i>
+                                                                Ouvrier: {{ rapportItem.ouvrierId | slice:0:8 }}...
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mt-3 d-flex gap-2">
+                                                        <button class="btn btn-info btn-sm"
+                                                            (click)="viewRapportDetails(rapportItem)">
+                                                            <i class="fas fa-eye"></i> Voir détails
+                                                        </button>
+                                                        <button class="btn btn-warning btn-sm"
+                                                            (click)="commenterRapport(rapportItem)">
+                                                            <i class="fas fa-comment"></i> Commenter
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="mt-3">
+                                                        <button class="btn btn-info btn-sm w-100"
+                                                            (click)="downloadRapport(rapportItem.trackingId, rapportItem.titre)"
+                                                            [disabled]="isLoadingRapports">
+                                                            <i class="fas fa-download me-2"></i>
+                                                            Télécharger Rapport
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Boutons d'action généraux -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-outline-primary btn-sm me-2"
+                                (click)="loadDevisForSignalement(selectedSignalementId)" [disabled]="isLoading">
+                                <i class="fas fa-sync-alt me-2"></i>
+                                Actualiser Devis
+                            </button>
+                            <button class="btn btn-outline-info btn-sm me-2"
+                                (click)="loadRapportsForSignalement(selectedSignalementId)"
+                                [disabled]="isLoadingRapports">
+                                <i class="fas fa-sync-alt me-2"></i>
+                                Actualiser Rapports
+                            </button>
+                            <!-- Exporter les données du signalement 
+                            <button class="btn btn-outline-secondary btn-sm" (click)="exportSignalementData()">
+                                <i class="fas fa-file-export me-2"></i>
+                                Exporter Données
+                            </button>
+                            -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selection required state -->
+                <div *ngIf="!selectedSignalementId" class="text-center py-4">
+                    <i class="fas fa-hand-pointer fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Sélectionnez un signalement</h5>
+                    <p class="text-muted">Veuillez sélectionner un signalement pour voir ses devis et rapports
+                        d'avancement.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

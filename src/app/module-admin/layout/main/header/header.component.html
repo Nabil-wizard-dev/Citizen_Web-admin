@@ -1,0 +1,32 @@
+<header class="header-container">
+  <div class="header-content">
+    <!-- Informations utilisateur à droite -->
+    <div class="user-profile-simple">
+      <div class="user-avatar-simple">
+        <img [src]="userPhotoUrl || 'assets/images/faces/default-avatar.png'" [alt]="userFullName"
+          (error)="onImageError($event)" class="avatar-image-simple">
+      </div>
+      <div class="user-info-simple">
+        <span class="user-name-simple">{{ userFullName }}</span>
+        <i class="bi bi-chevron-down dropdown-arrow-simple" (click)="toggleUserMenu()"></i>
+      </div>
+
+      <!-- Menu déroulant utilisateur -->
+      <div class="user-dropdown-simple" *ngIf="showUserMenu">
+        <div class="dropdown-item-simple" (click)="navigateToProfile()">
+          <i class="bi bi-person"></i>
+          <span>Mon Profil</span>
+        </div>
+        <div class="dropdown-item-simple" (click)="navigateToSettings()">
+          <i class="bi bi-gear"></i>
+          <span>Paramètres</span>
+        </div>
+        <div class="dropdown-divider-simple"></div>
+        <div class="dropdown-item-simple logout-item-simple" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Déconnexion</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

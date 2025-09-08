@@ -1,0 +1,92 @@
+<div class="container">
+    
+
+   <!-- barre de recherche -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Rechercher un ouvrier..." [(ngModel)]="searchTerm">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row"> 
+        <!-- Liste des ouvriers -->
+        <div class="card-content">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NOM</th>
+                            <th>PRÉNOM</th>
+                            <th>SPÉCIALITÉ</th>
+                            <th>DISPONIBILITÉ</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let ouvrier of filterOuvriers();let i = index" 
+                            [class.selected-row]="selectedOuvrier?.trackingId === ouvrier.trackingId"
+                            (click)="selectOuvrier(ouvrier)"
+                            style="cursor: pointer;">
+                            <td class="text-bold-500">{{ i+1 }}</td>
+                            <td>{{ ouvrier.nom }}</td>
+                            <td>{{ ouvrier.prenom }}</td>
+                            <td>
+                                <span class="badge bg-info">{{ ouvrier.specialite }}</span>
+                            </td>
+                            <td>
+                                <span class="badge " 
+                                [ngClass]="ouvrier.signalementActuelId == null ? 'bg-success' : 'bg-danger'">
+                                    {{ ouvrier.signalementActuelId == null ? 'Libre' : 'Occupé' }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-secondary" 
+                                        (click)="voirProfil(ouvrier); $event.stopPropagation()">
+                                    <i class="bi bi-person"></i> Profil
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="filterOuvriers().length === 0">
+                            <td colspan="6" class="text-center text-muted py-4">
+                                Aucun ouvrier trouvé
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton de validation -->
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <button class="btn btn-primary" 
+                    [disabled]="!selectedOuvrier || !signalement"
+                    (click)="onSelectionConfirmed()">
+                <i class="bi bi-check-lg"></i> 
+                {{ !signalement ? 'Chargement...' : 'Sélectionner cet ouvrier' }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .selected-row {
+        background-color: #e3f2fd !important;
+        border-left: 4px solid #007bff;
+    }
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    .table tbody tr.selected-row:hover {
+        background-color: #e3f2fd !important;
+    }
+</style>

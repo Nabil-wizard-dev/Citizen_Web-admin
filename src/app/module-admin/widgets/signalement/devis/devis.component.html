@@ -1,0 +1,92 @@
+<div class="card">
+    <div class="card-body">
+        <div class="divider">
+            <div class="divider-text card-title">
+                <i class="fas fa-file-pdf me-2"></i>
+                Devis du Signalement
+            </div>
+        </div>
+
+        <!-- Loading state -->
+        <div *ngIf="isLoading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-2 text-muted">Chargement des devis...</p>
+        </div>
+
+        <!-- Error state -->
+        <div *ngIf="errorMessage && !isLoading" class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ errorMessage }}
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="!isLoading && !errorMessage && devis.length === 0" class="text-center py-4">
+            <i class="fas fa-file-pdf fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">Aucun devis disponible</h5>
+            <p class="text-muted">Aucun devis n'a été créé pour ce signalement.</p>
+        </div>
+
+        <!-- Devis list -->
+        <div *ngIf="!isLoading && devis.length > 0" class="devis-list">
+            <div class="row">
+                <div *ngFor="let devisItem of devis; trackBy: trackByDevisId" class="col-md-6 col-lg-4 mb-3">
+                    <div class="card devis-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="devis-icon">
+                                    <i class="fas fa-file-pdf text-danger fa-2x"></i>
+                                </div>
+                                <div class="devis-status">
+                                    <span class="badge bg-success">Disponible</span>
+                                </div>
+                            </div>
+
+                            <h6 class="card-title text-truncate" [title]="devisItem.titre">
+                                {{ devisItem.titre || 'Devis sans titre' }}
+                            </h6>
+
+                            <div class="devis-info">
+                                <div class="info-item">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Créé le {{ formatDate(devisItem.dateCreation) }}
+                                    </small>
+                                </div>
+
+                                <div class="info-item">
+                                    <small class="text-muted">
+                                        <i class="fas fa-user me-1"></i>
+                                        Ouvrier: {{ devisItem.ouvrierId | slice:0:8 }}...
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <button class="btn btn-primary btn-sm w-100"
+                                    (click)="downloadDevis(devisItem.trackingId, devisItem.titre)"
+                                    [disabled]="isLoading">
+                                    <i class="fas fa-download me-2"></i>
+                                    Télécharger PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Refresh button -->
+        <div *ngIf="!isLoading" class="text-center mt-3">
+            <button class="btn btn-outline-primary btn-sm" (click)="loadDevis()" [disabled]="isLoading">
+                <i class="fas fa-sync-alt me-2"></i>
+                Actualiser
+            </button>
+            <button class="btn btn-outline-secondary btn-sm ms-2" (click)="testApi()">
+                <i class="fas fa-bug me-2"></i>
+                Test API
+            </button>
+        </div>
+    </div>
+</div>
