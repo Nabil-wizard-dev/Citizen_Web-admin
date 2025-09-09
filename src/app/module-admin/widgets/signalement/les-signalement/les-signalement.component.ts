@@ -26,7 +26,12 @@ export class LesSignalementComponent implements OnInit {
     
     this.signalementService.getSignalements().subscribe({
       next: (response: any) => {
-        this.signalements = response.data;
+        // La réponse HAL contient les signalements dans _embedded.signalements
+        if (response._embedded && response._embedded.signalements) {
+          this.signalements = response._embedded.signalements;
+        } else {
+          this.signalements = [];
+        }
         this.loading = false;
       },
       error: (err: any) => {

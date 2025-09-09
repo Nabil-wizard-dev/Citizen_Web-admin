@@ -16,7 +16,7 @@ export interface Devis {
   providedIn: 'root'
 })
 export class DevisService {
-  private apiUrl = `${environment.apiUrl}/api/signalements`;
+  private apiUrl = `${environment.apiUrl}/signalements`;
 
   constructor(private http: HttpClient) { }
 

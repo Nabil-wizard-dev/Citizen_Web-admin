@@ -9,7 +9,7 @@ import { Ouvrier } from '../../models/ouvrier';
 })
 export class OuvrierService {
 
-  private apiUrl = `${environment.apiUrl}/api/ouvriers`;
+  private apiUrl = `${environment.apiUrl}/ouvriers`;
 
   constructor(private http: HttpClient) { }
 
