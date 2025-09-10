@@ -28,7 +28,6 @@ export class DetailleSignalementComponent {
     private router: Router) { }
 
   ngOnInit(): void {
-    console.log('🚀 DetailleSignalementComponent ngOnInit()');
     //recuperation du signalement en question
     this.route.params.subscribe(params => {
       console.log('📋 Paramètres de route:', params);

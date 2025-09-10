@@ -9,7 +9,7 @@ import { EtatDeTache } from '../../models/etatDeTache';
 })
 export class EtatDeEtatDeEtatDeTacheService {
 
-  private apiUrl = `${environment.apiUrl}/etatsDeTaches`;
+  private apiUrl = `${environment.apiUrl}/api/etatsDeTaches`;
 
   constructor(private http: HttpClient) { }
 

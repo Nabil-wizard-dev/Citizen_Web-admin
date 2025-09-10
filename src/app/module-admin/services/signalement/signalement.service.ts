@@ -8,12 +8,13 @@ import { Signalement } from '../../models/signalement';
   providedIn: 'root'
 })
 export class SignalementService {
-  private apiUrl = `${environment.apiUrl}/signalements`;
+  private apiUrl = `${environment.apiUrl}/api/signalements`;
+  private apiUrl2 = `${environment.apiUrl}/signalements`;
 
   constructor(private http: HttpClient) { }
 
   getSignalements(page: number = 0, size: number = 20): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}?page=${page}&size=${size}`);
+    return this.http.get<any>(`${this.apiUrl2}?page=${page}&size=${size}`);
   }
 
   getSignalementById(id: string): Observable<Signalement> {
