@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthentificationService } from '../../../../module-auth/services/authentification/authentification.service';
+import { ProfileService } from '../../../../module-auth/services/profile/profile.service';
 import { environment } from '../../../../../environments/environment.development';
 
 @Component({
@@ -21,7 +22,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthentificationService
+    private authService: AuthentificationService,
+    private profileService: ProfileService
   ) {}
 
   ngOnInit(): void {
@@ -44,60 +46,56 @@ export class HeaderComponent implements OnInit {
   loadUserInfo(): void {
     console.log('🔍 Chargement des informations utilisateur...');
     
-    // Forcer la récupération depuis le token
     const user = this.authService.getCurrentUser();
     console.log('👤 Utilisateur récupéré depuis localStorage:', user);
     
     this.isLoggedIn = this.authService.isLoggedIn();
     console.log('🔐 Connecté:', this.isLoggedIn);
     
-    if (user && user.nom && user.prenom) {
+    if (!user || !user.trackingId) {
+      console.log('❌ Aucun utilisateur ou trackingId trouvé');
+      this.userFullName = 'Utilisateur';
+      return;
+    }
+
+    // Essayer d'abord avec les données locales si disponibles
+    if (user.nom && user.prenom) {
       this.userFullName = `${user.prenom} ${user.nom}`.trim();
       console.log('📝 Nom complet depuis localStorage:', this.userFullName);
       
-      // Charger la photo de profil si disponible
       if (user.photoProfil) {
         this.userPhotoUrl = `${environment.apiUrl}/${user.photoProfil}`;
         console.log('📸 URL photo depuis localStorage:', this.userPhotoUrl);
-      } else {
-        console.log('📸 Aucune photo de profil dans localStorage');
       }
     } else {
-      console.log('❌ Informations utilisateur incomplètes dans localStorage, tentative depuis le token...');
-      
-      // Essayer de récupérer depuis le token directement
-      const token = this.authService.getToken();
-      if (token) {
-        try {
-          const base64Url = token.split('.')[1];
-          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-          const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-          }).join(''));
-          const decodedToken = JSON.parse(jsonPayload);
+      // Sinon, récupérer depuis l'API
+      console.log('🔄 Récupération du profil depuis l\'API...');
+      this.profileService.getProfile(user.trackingId).subscribe({
+        next: (profile) => {
+          this.userFullName = `${profile.prenom} ${profile.nom}`.trim();
+          console.log('📝 Nom complet depuis API:', this.userFullName);
           
-          console.log('🔍 Token décodé directement:', decodedToken);
-          
-          if (decodedToken.nom && decodedToken.prenom) {
-            this.userFullName = `${decodedToken.prenom} ${decodedToken.nom}`.trim();
-            console.log('📝 Nom complet depuis token:', this.userFullName);
-            
-            if (decodedToken.photoProfil) {
-              this.userPhotoUrl = `${environment.apiUrl}/${decodedToken.photoProfil}`;
-              console.log('📸 URL photo depuis token:', this.userPhotoUrl);
-            }
-          } else {
-            console.log('❌ Informations nom/prénom manquantes dans le token');
-            this.userFullName = 'Utilisateur';
+          if (profile.photoProfil) {
+            this.userPhotoUrl = `${environment.apiUrl}/${profile.photoProfil}`;
+            console.log('📸 URL photo depuis API:', this.userPhotoUrl);
           }
-        } catch (error) {
-          console.error('❌ Erreur lors du décodage du token:', error);
+          
+          // Mettre à jour le localStorage avec les vraies données
+          const updatedUser = {
+            ...user,
+            nom: profile.nom,
+            prenom: profile.prenom,
+            adresse: profile.adresse,
+            cni: profile.cni,
+            photoProfil: profile.photoProfil
+          };
+          this.authService.saveUser(updatedUser);
+        },
+        error: (error) => {
+          console.error('❌ Erreur lors de la récupération du profil:', error);
           this.userFullName = 'Utilisateur';
         }
-      } else {
-        console.log('❌ Aucun token trouvé');
-        this.userFullName = 'Utilisateur';
-      }
+      });
     }
   }
 

@@ -50,41 +50,51 @@ export class ProfileComponent implements OnInit {
 
     // Récupérer les informations utilisateur depuis localStorage
     const user = this.authService.getCurrentUser();
-    
-    if (user) {
-      console.log(' Chargement du profil depuis localStorage:', user);
-      
-      // Créer un objet ProfileResponse à partir des données locales
-      this.profile = {
-        trackingId: user.trackingId,
-        nom: user.nom,
-        prenom: user.prenom,
-        email: user.email,
-        numero: user.numero,
-        adresse: user.adresse,
-        dateNaissance: user.dateNaissance,
-        cni: user.cni,
-        role: user.role,
-        photoProfil: user.photoProfil
-      };
-      
-      this.populateForm();
-      
-      if (this.profile.photoProfil) {
-        this.previewUrl = `${environment.apiUrl}/${this.profile.photoProfil}`;
-      }
-      
-      this.successMessage = 'Profil récupéré avec succès';
-      setTimeout(() => {
-        this.successMessage = '';
-      }, 3000);
-      
-      this.isLoading = false;
-    } else {
+    if (!user || !user.trackingId) {
       console.log(' Aucun utilisateur trouvé dans localStorage');
       this.errorMessage = 'Impossible de récupérer les informations utilisateur';
       this.isLoading = false;
+      return;
     }
+
+    // Tenter de récupérer le profil complet depuis l'API (meilleure source)
+    this.profileService.getProfile(user.trackingId).subscribe({
+      next: (apiProfile: ProfileResponse) => {
+        this.profile = apiProfile;
+        this.populateForm();
+
+        if (this.profile.photoProfil) {
+          this.previewUrl = `${environment.apiUrl}/${this.profile.photoProfil}`;
+        }
+
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        console.warn(' Échec du chargement via API, utilisation du localStorage:', err);
+
+        // Fallback vers les données locales si l'API échoue
+        this.profile = {
+          trackingId: user.trackingId,
+          nom: user.nom,
+          prenom: user.prenom,
+          email: user.email,
+          numero: user.numero,
+          adresse: user.adresse,
+          dateNaissance: user.dateNaissance as any,
+          cni: user.cni,
+          role: user.role,
+          photoProfil: user.photoProfil
+        } as ProfileResponse;
+
+        this.populateForm();
+
+        if (this.profile.photoProfil) {
+          this.previewUrl = `${environment.apiUrl}/${this.profile.photoProfil}`;
+        }
+
+        this.isLoading = false;
+      }
+    });
   }
 
   populateForm(): void {
