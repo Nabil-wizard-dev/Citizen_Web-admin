@@ -28,6 +28,8 @@ import { TacheComponent } from './widgets/signalement/tache/tache.component';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { ListeDevisComponent } from './widgets/signalement/liste-devis/liste-devis.component';
 import { ProfileComponent } from './widgets/profile/profile.component';
+import { ListAutorityComponent } from './widgets/personnel/autorite/list-autority/list-autority.component';
+import { ListOuvrierComponent } from './widgets/personnel/ouvrier/list-ouvrier/list-ouvrier.component';
 
 
 @NgModule({
@@ -51,6 +53,8 @@ import { ProfileComponent } from './widgets/profile/profile.component';
     TacheComponent,
     ListeDevisComponent,
     ProfileComponent,
+    ListAutorityComponent,
+    ListOuvrierComponent,
      
   ],
   imports: [
