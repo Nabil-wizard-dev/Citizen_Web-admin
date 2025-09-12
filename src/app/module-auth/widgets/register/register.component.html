@@ -1,145 +1,205 @@
-<div id="auth">
+<div id="auth" class="d-flex align-items-center">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Section formulaire à gauche -->
+            <div class="col-lg-5 col-12 d-flex align-items-center" style="margin-top: 300px;">
+                <div id="auth-left" class="w-100 px-4 px-lg-5">
+                    <!-- Logo -->
+                    <div class="auth-logo text-center mb-4">
+                        <a routerLink="." class="d-inline-block">
+                            <img src="assets/images/logo/logo.png" alt="Logo" class="img-fluid" style="width: 30%; height: 30%; transition: transform 0.3s ease;">
+                        </a>
+                    </div>
 
-    <div class="row h-100">
-        <div class="col-lg-5 col-12">
-            <div id="auth-left">
-                <div class="auth-logo">
-                    <a href=""><img src="assets/images/logo/logo.png" alt="Logo"></a>
-                </div>
-                <h1 class="auth-title">Inscription</h1>
-                <p class="auth-subtitle mb-5">Entrer vos informations</p>
+                    <!-- Titre -->
+                    <div class="text-center mb-4">
+                        <h1 class="auth-title display-4 fw-bold mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Inscription</h1>
+                        <p class="auth-subtitle text-muted fs-5">Entrez vos informations</p>
+                    </div>
 
-                <form [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()">
+                    <!-- Formulaire -->
+                    <form [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()" class="mt-4">
+                        <!-- Messages globaux -->
+                        <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+                        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
-                    <!-- Message de succès -->
-                    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
-                    <!-- Message d'erreur -->
-                    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-
-                    <!-- nom et prenom -->
-                    <div class="d-flex gap-3">
-                        <div class="">
-                            <div *ngIf="form['nom'].invalid && form['nom'].touched" class="text-danger">
-                                <small *ngIf="form['nom'].errors?.['required']">Le nom est requis.</small>
-                                <small *ngIf="form['nom'].errors?.['minlength']">Le nom doit avoir au moins 3
-                                    caractères.</small>
+                        <!-- nom et prenom -->
+                        <div class="d-flex gap-3">
+                            <div class="flex-fill">
+                                <div *ngIf="form['nom'].invalid && form['nom'].touched" class="text-danger mb-2">
+                                    <small *ngIf="form['nom'].errors?.['required']">Le nom est requis.</small>
+                                    <small *ngIf="form['nom'].errors?.['minlength']">Le nom doit avoir au moins 3 caractères.</small>
+                                </div>
+                                <div class="form-group position-relative has-icon-left mb-4">
+                                    <input type="text"
+                                           class="form-control form-control-lg border-0 shadow-sm"
+                                           formControlName="nom"
+                                           placeholder="Nom"
+                                           style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                                    <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                        <i class="bi bi-person fs-5"></i>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group position-relative has-icon-left">
-                                <input type="text" class="form-control form-control-xl" formControlName="nom"
-                                    placeholder="Nom">
-                                <div class="form-control-icon">
-                                    <i class="bi bi-person"></i>
+                            <div class="flex-fill">
+                                <div *ngIf="form['prenom'].invalid && form['prenom'].touched" class="text-danger mb-2">
+                                    <small *ngIf="form['prenom'].errors?.['required']">Le prénom est requis.</small>
+                                    <small *ngIf="form['prenom'].errors?.['minlength']">Le prénom doit avoir au moins 3 caractères.</small>
+                                </div>
+                                <div class="form-group position-relative has-icon-left mb-4">
+                                    <input type="text"
+                                           class="form-control form-control-lg border-0 shadow-sm"
+                                           formControlName="prenom"
+                                           placeholder="Prénom"
+                                           style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                                    <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                        <i class="bi bi-person fs-5"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="">
-                            <div *ngIf="form['prenom'].invalid && form['prenom'].touched" class="text-danger">
-                                <small *ngIf="form['prenom'].errors?.['required']">Le prenom est requis.</small>
-                                <small *ngIf="form['prenom'].errors?.['minlength']">Le prenom doit avoir au moins 3
-                                    caractères.</small>
+
+                        <!-- cni -->
+                        <div>
+                            <div *ngIf="form['cni'].invalid && form['cni'].touched" class="text-danger mb-2">
+                                <small *ngIf="form['cni'].errors?.['required']">Numéro d'identité requis.</small>
+                                <small *ngIf="form['cni'].errors?.['pattern']">Format invalide. Exemple attendu : 1234-567-8910.</small>
                             </div>
-                            <div class="form-group position-relative has-icon-left">
-                                <input type="text" class="form-control form-control-xl" formControlName="prenom"
-                                    placeholder="Prenom">
-                                <div class="form-control-icon">
-                                    <i class="bi bi-person"></i>
+                            <div class="form-group position-relative has-icon-left mb-4">
+                                <input type="text"
+                                       class="form-control form-control-lg border-0 shadow-sm"
+                                       formControlName="cni"
+                                       placeholder="CNI"
+                                       style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                                <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                    <i class="bi bi-file-earmark-person fs-5"></i>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- cni -->
-                    <div class="">
-                        <div *ngIf="form['cni'].invalid && form['cni'].touched" class="text-danger">
-                            <small *ngIf="form['cni'].errors?.['required']">numero d'identite requis.</small>
-                            <small *ngIf="form['cni'].errors?.['pattern']">Format invalide. Exemple attendu :
-                                1234-567-8910.</small>
-                        </div>
-                        <div class="form-group position-relative has-icon-left">
-                            <input type="text" class="form-control form-control-xl" formControlName="cni"
-                                placeholder="cni">
-                            <div class="form-control-icon">
-                                <i class="bi bi-file-earmark-person"></i>
+                        <!-- email -->
+                        <div>
+                            <div *ngIf="form['email'].invalid && form['email'].touched" class="text-danger mb-2">
+                                <small *ngIf="form['email'].errors?.['required']">L'email est requis.</small>
+                                <small *ngIf="form['email'].errors?.['pattern']">Le format est invalide.</small>
+                            </div>
+                            <div class="form-group position-relative has-icon-left mb-4">
+                                <input type="email"
+                                       class="form-control form-control-lg border-0 shadow-sm"
+                                       formControlName="email"
+                                       placeholder="Adresse email"
+                                       style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                                <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                    <i class="bi bi-envelope fs-5"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- email -->
-                    <div>
-                        <div *ngIf="form['email'].invalid && form['email'].touched" class="text-danger">
-                            <small *ngIf="form['email'].errors?.['required']">L'email est requis.</small>
-                            <small *ngIf="form['email'].errors?.['pattern']">Le Format est invalide.</small>
-                        </div>
-                        <div class="form-group position-relative has-icon-left">
-                            <input type="email" class="form-control form-control-xl" formControlName="email"
-                                placeholder="Email">
-                            <div class="form-control-icon">
-                                <i class="bi bi-envelope"></i>
+                        <!-- numero -->
+                        <div>
+                            <div *ngIf="form['numero'].invalid && form['numero'].touched" class="text-danger mb-2">
+                                <small *ngIf="form['numero'].errors?.['required']">Le numéro est requis.</small>
+                                <small *ngIf="form['numero'].errors?.['minlength']">Le numéro doit avoir 8 chiffres.</small>
+                                <small *ngIf="form['numero'].errors?.['maxlength']">Le numéro doit avoir 8 chiffres.</small>
+                            </div>
+                            <div class="form-group position-relative has-icon-left mb-4">
+                                <input type="tel"
+                                       class="form-control form-control-lg border-0 shadow-sm"
+                                       formControlName="numero"
+                                       placeholder="Numéro de téléphone"
+                                       style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                                <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                    <i class="bi bi-telephone fs-5"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- numero -->
-                    <div>
-                        <div *ngIf="form['numero'].invalid && form['numero'].touched" class="text-danger">
-                            <small *ngIf="form['numero'].errors?.['required']">Le numero est requis.</small>
-                            <small *ngIf="form['numero'].errors?.['minlength']">Le numero doit avoir 8 chiffres.</small>
-                            <small *ngIf="form['numero'].errors?.['maxlength']">Le numero doit avoir 8 chiffres.</small>
-                        </div>
-                        <div class="form-group position-relative has-icon-left">
-                            <input type="tel" class="form-control form-control-xl" formControlName="numero"
-                                placeholder="numero">
-                            <div class="form-control-icon">
-                                <i class="bi bi-telephone"></i>
+                        <!-- adresse -->
+                        <div class="form-group position-relative has-icon-left mb-4">
+                            <input type="text"
+                                   class="form-control form-control-lg border-0 shadow-sm"
+                                   formControlName="adresse"
+                                   placeholder="Adresse"
+                                   style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                            <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                <i class="bi bi-phone-landscape fs-5"></i>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- adresse -->
-                    <div class="form-group position-relative has-icon-left ">
-                        <input type="text" class="form-control form-control-xl" formControlName="adresse"
-                            placeholder="adresse">
-                        <div class="form-control-icon">
-                            <i class="bi bi-phone-landscape"></i>
-                        </div>
-                    </div>
-
-                    <!-- mot de passe -->
-                    <div>
-                        <div *ngIf="form['motDePasse'].invalid && form['motDePasse'].touched" class="text-danger">
-                            <small *ngIf="form['motDePasse'].errors?.['required']">Le mot de passe est requis.</small>
-                            <small *ngIf="form['motDePasse'].errors?.['pattern']">mot de passe trop evidant !</small>
-                        </div>
-                        <div class="form-group position-relative has-icon-left">
-                            <input type="password" class="form-control form-control-xl" formControlName="motDePasse"
-                                placeholder="Mot de passe">
-                            <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                        <!-- mot de passe -->
+                        <div>
+                            <div *ngIf="form['motDePasse'].invalid && form['motDePasse'].touched" class="text-danger mb-2">
+                                <small *ngIf="form['motDePasse'].errors?.['required']">Le mot de passe est requis.</small>
+                                <small *ngIf="form['motDePasse'].errors?.['pattern']">Mot de passe trop évident.</small>
+                            </div>
+                            <div class="form-group position-relative has-icon-left mb-4">
+                                <input type="password"
+                                       class="form-control form-control-lg border-0 shadow-sm"
+                                       formControlName="motDePasse"
+                                       placeholder="Mot de passe"
+                                       style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                                <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                    <i class="bi bi-shield-lock fs-5"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- mot de passe confirmation -->
-                    <div class="form-group position-relative has-icon-left mb-4">
-                        <input type="password" name="password" class="form-control form-control-xl"
-                            placeholder="Confirmer mot de passe" formControlName="passwordConfirmation">
-                        <div class="form-control-icon">
-                            <i class="bi bi-shield-lock"></i>
+                        <!-- mot de passe confirmation -->
+                        <div class="form-group position-relative has-icon-left mb-4">
+                            <input type="password"
+                                   name="password"
+                                   class="form-control form-control-lg border-0 shadow-sm"
+                                   placeholder="Confirmer le mot de passe"
+                                   formControlName="passwordConfirmation"
+                                   style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                            <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                <i class="bi bi-shield-lock fs-5"></i>
+                            </div>
                         </div>
+
+                        <!-- Bouton -->
+                        <button class="btn btn-primary btn-lg w-100 mt-2 border-0 shadow-lg"
+                                type="submit"
+                                [disabled]="utilisateurForm.invalid"
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; height: 55px; font-weight: 600; letter-spacing: 0.5px; transition: all 0.3s ease; transform: translateY(0);"
+                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(102, 126, 234, 0.4)'"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)'">
+                            Créer le compte
+                        </button>
+                    </form>
+
+                    <!-- Lien connexion -->
+                    <div class="text-center mt-5">
+                        <p class="text-muted mb-0">
+                            Déjà inscrit ?
+                            <a routerLink="/auth/login" class="text-decoration-none fw-bold" style="color: #667eea; transition: color 0.3s ease;">
+                                Se connecter
+                            </a>
+                        </p>
                     </div>
-                    <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5" type="submit" [disabled]="utilisateurForm.invalid">Envoyer</button>
-                </form>
-                <div class="text-center mt-5 text-lg fs-4">
-                    <p class='text-gray-600'>deja inscrit ? <a routerLink="/auth/login" class="font-bold"> se connecter
-                        </a>.</p>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-7 d-none d-lg-block">
-            <div id="auth-right">
 
+            <!-- Section image à droite -->
+            <div class="col-lg-7 d-none d-lg-block p-0">
+                <div id="auth-right" class="h-100 position-relative overflow-hidden" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+                    <!-- Motifs décoratifs -->
+                    <div class="position-absolute" style="top: 10%; right: 10%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; transform: rotate(45deg);"></div>
+                    <div class="position-absolute" style="bottom: 20%; left: 15%; width: 150px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+                    <div class="position-absolute" style="top: 50%; left: 5%; width: 100px; height: 100px; background: rgba(255,255,255,0.06); border-radius: 50%;"></div>
+
+                    <!-- Contenu central -->
+                    <div class="d-flex align-items-center justify-content-center h-100 p-5">
+                        <div class="text-center text-white">
+                            <div class="mb-4">
+                                <i class="bi bi-person-plus" style="font-size: 4rem; opacity: 0.8;"></i>
+                            </div>
+                            <h2 class="display-5 fw-bold mb-3 text-white">Bienvenue</h2>
+                            <p class="fs-5 opacity-90 text-white">Créez votre compte et accédez à votre espace en toute simplicité.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
 </div>

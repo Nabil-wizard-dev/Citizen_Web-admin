@@ -1,43 +1,95 @@
-<div id="auth">
+<div id="auth" class="min-vh-100 d-flex align-items-center">
+    <div class="container-fluid">
         <div class="row h-100">
-            <div class="col-lg-5 col-12">
-                <div id="auth-left">
-                    <div class="auth-logo">
-                        <a routerLink="."><img src="assets/images/logo/logo.png" alt="Logo"></a>
+            <!-- Section formulaire à gauche -->
+            <div class="col-lg-5 col-12 d-flex align-items-center">
+                <div id="auth-left" class="w-100 px-4 px-lg-5">
+                    <!-- Logo avec animation -->
+                    <div class="auth-logo text-center mb-4">
+                        <a routerLink="." class="d-inline-block">
+                            <img src="assets/images/logo/logo.png" alt="Logo" class="img-fluid" style="width: 30%; height: 30%; transition: transform 0.3s ease;">
+                        </a>
                     </div>
-                    <h1 class="auth-title">Connexion</h1>
-                    <p class="auth-subtitle mb-5">Entrer vos informations de connexion </p>
+                    
+                    <!-- Titre avec gradient -->
+                    <div class="text-center mb-4">
+                        <h1 class="auth-title display-4 fw-bold mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connexion</h1>
+                        <p class="auth-subtitle text-muted fs-5">Entrez vos informations de connexion</p>
+                    </div>
 
-                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
+                    <!-- Formulaire avec design amélioré -->
+                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="mt-4">
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" class="form-control form-control-xl" formControlName="email" placeholder="Email">
-                            <div class="form-control-icon">
-                                <i class="bi bi-envelope"></i>
+                            <input type="text" 
+                                   class="form-control form-control-lg border-0 shadow-sm" 
+                                   formControlName="email" 
+                                   placeholder="Adresse email"
+                                   style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                            <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                <i class="bi bi-envelope fs-5"></i>
                             </div>
                         </div>
 
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" class="form-control form-control-xl" formControlName="motDePasse"  placeholder="Mot de passe">
-                            <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                            <input type="password" 
+                                   class="form-control form-control-lg border-0 shadow-sm" 
+                                   formControlName="motDePasse"  
+                                   placeholder="Mot de passe"
+                                   style="background: rgba(255,255,255,0.9); border-radius: 15px; padding-left: 3rem; height: 55px; transition: all 0.3s ease;">
+                            <div class="form-control-icon" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #667eea;">
+                                <i class="bi bi-shield-lock fs-5"></i>
                             </div>
                         </div>
                         
-                        <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5" [disabled]="loginForm.invalid" type="submit" >connexion</button>
+                        <!-- Bouton avec gradient et animation -->
+                        <button class="btn btn-primary btn-lg w-100 mt-4 border-0 shadow-lg" 
+                                [disabled]="loginForm.invalid" 
+                                type="submit"
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; height: 55px; font-weight: 600; letter-spacing: 0.5px; transition: all 0.3s ease; transform: translateY(0);"
+                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(102, 126, 234, 0.4)'"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)'">
+                            Se connecter
+                        </button>
                     </form>
-                    <div class="text-center mt-5 text-lg fs-4">
-                        <p class="text-gray-600">Pas de compte? <a routerLink="/auth/register"
-                                class="font-bold"> s'incrire
-                            </a>.</p>
-                        <p><a class="font-bold" routerLink="/auth/resetPassword">mot de passe oublier?</a></p>
+                    
+                    <!-- Liens avec design amélioré -->
+                    <div class="text-center mt-5">
+                        <p class="text-muted mb-3">
+                            Pas de compte ? 
+                            <a routerLink="/auth/register" class="text-decoration-none fw-bold" style="color: #667eea; transition: color 0.3s ease;">
+                                S'inscrire
+                            </a>
+                        </p>
+                        <p class="mb-0">
+                            <a routerLink="/auth/resetPassword" class="text-decoration-none fw-bold" style="color: #667eea; transition: color 0.3s ease;">
+                                Mot de passe oublié ?
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-7 d-none d-lg-block">
-                <div id="auth-right">
-
+            
+            <!-- Section image à droite -->
+            <div class="col-lg-7 d-none d-lg-block p-0">
+                <div id="auth-right" class="h-100 position-relative overflow-hidden" 
+                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+                    <!-- Motifs décoratifs -->
+                    <div class="position-absolute" style="top: 10%; right: 10%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; transform: rotate(45deg);"></div>
+                    <div class="position-absolute" style="bottom: 20%; left: 15%; width: 150px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+                    <div class="position-absolute" style="top: 50%; left: 5%; width: 100px; height: 100px; background: rgba(255,255,255,0.06); border-radius: 50%;"></div>
+                    
+                    <!-- Contenu central -->
+                    <div class="d-flex align-items-center justify-content-center h-100 p-5">
+                        <div class="text-center text-white">
+                            <div class="mb-4">
+                                <i class="bi bi-shield-check" style="font-size: 4rem; opacity: 0.8;"></i>
+                            </div>
+                            <h2 class="display-5 fw-bold mb-3 text-white">Bienvenue</h2>
+                            <p class="fs-5 opacity-90 text-white">Accédez à votre espace sécurisé et gérez vos données en toute confiance.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
