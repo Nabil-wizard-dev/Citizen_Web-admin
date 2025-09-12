@@ -53,10 +53,11 @@ export class ListeDevisComponent implements OnInit {
   }
 
   loadSignalements(): void {
-    this.signalementService.getSignalements().subscribe({
+    this.signalementService.getSignalements2().subscribe({
       next: (response: any) => {
         if (response.data) {
           this.signalements = response.data;
+          console.log(' Signalements récupérés:', this.signalements);
         }
       },
       error: (error: any) => {
