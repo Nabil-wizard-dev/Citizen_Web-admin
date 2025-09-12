@@ -1,0 +1,196 @@
+<div class="container-fluid">
+    <!-- En-tête avec titre et bouton d'ajout -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4 class="card-title mb-0">
+                <i class="bi bi-shield-check me-2"></i>
+                Liste des Autorités
+            </h4>
+            <p class="text-muted">Gérez les autorités de votre organisation</p>
+        </div>
+        <div class="col-md-6 text-end">
+            <a class="btn btn-primary" routerLink="/admin/addAutority">
+                <i class="bi bi-plus-circle me-1"></i>
+                Ajouter une Autorité
+            </a>
+        </div>
+    </div>
+
+    <!-- Messages d'erreur -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+        <button type="button" class="btn-close" (click)="error = ''"></button>
+    </div>
+
+    <!-- Barre de recherche et filtres -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="Rechercher par nom, prénom, email ou rôle..." 
+                    [(ngModel)]="searchTerm"
+                    (input)="onSearchChange()">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary" (click)="loadAutorites()" [disabled]="loading">
+                    <i class="bi bi-arrow-clockwise me-1"></i>
+                    Actualiser
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicateur de chargement -->
+    <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-2 text-muted">Chargement des autorités...</p>
+    </div>
+
+    <!-- Tableau des autorités -->
+    <div *ngIf="!loading" class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-content">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let autorite of filterAutorites(); let i = index" 
+                                    [class.selected-row]="selectedAutorite?.trackingId === autorite.trackingId"
+                                    (click)="selectAutorite(autorite)"
+                                    style="cursor: pointer;">
+                                    
+                                    <td class="text-bold-500">{{ i + 1 }}</td>
+                                    <td>{{ autorite.nom }}</td>
+                                    <td>{{ autorite.prenom }}</td>
+                                    <td>
+                                        <small class="text-muted">{{ autorite.email }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="getRoleClass(autorite)">
+                                            {{ getRoleText(autorite) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button 
+                                                class="btn btn-sm btn-outline-info" 
+                                                (click)="voirProfil(autorite); $event.stopPropagation()"
+                                                title="Voir le profil">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button 
+                                                class="btn btn-sm btn-outline-warning" 
+                                                (click)="modifierAutorite(autorite); $event.stopPropagation()"
+                                                title="Modifier">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button 
+                                                class="btn btn-sm btn-outline-danger" 
+                                                (click)="supprimerAutorite(autorite); $event.stopPropagation()"
+                                                title="Supprimer">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Message si aucun résultat -->
+                                <tr *ngIf="filterAutorites().length === 0">
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox display-4 d-block mb-2"></i>
+                                        <span *ngIf="searchTerm">Aucune autorité trouvée pour "{{ searchTerm }}"</span>
+                                        <span *ngIf="!searchTerm">Aucune autorité enregistrée</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div *ngIf="!loading && autorites.length > 0" class="row mt-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ totalAutorites }}</h5>
+                    <p class="card-text">Total Autorités</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ autoritesLocales }}</h5>
+                    <p class="card-text">Autorités Locales</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ administrateurs }}</h5>
+                    <p class="card-text">Administrateurs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ resultatsFiltres }}</h5>
+                    <p class="card-text">Résultats Filtrés</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton de validation (si utilisé dans un contexte d'assignation) -->
+    <div *ngIf="selectedAutorite" class="row mt-4">
+        <div class="col-12 text-center">
+            <div class="alert alert-info">
+                <strong>Autorité sélectionnée :</strong> {{ selectedAutorite.nom }} {{ selectedAutorite.prenom }}
+                <button class="btn btn-sm btn-outline-secondary ms-2" (click)="selectedAutorite = null">
+                    <i class="bi bi-x"></i> Désélectionner
+                </button>
+            </div>
+            <button class="btn btn-primary" (click)="onSelectionConfirmed()">
+                <i class="bi bi-check-lg me-1"></i> 
+                Confirmer la sélection
+            </button>
+        </div>
+    </div>
+</div>
+ 
+<style>
+    .selected-row {
+        background-color: #e3f2fd !important;
+        border-left: 4px solid #007bff;
+    }
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    .table tbody tr.selected-row:hover {
+        background-color: #e3f2fd !important;
+    }
+</style>

@@ -1,7 +1,7 @@
 export interface Utilisateur {
     nom: string
     prenom: string;
-    imagePath: string;
+    imagePath?: string;
     cni: string;
     adresse: string;
     numero: number;

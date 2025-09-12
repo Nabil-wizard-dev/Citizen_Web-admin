@@ -14,6 +14,8 @@ import { AssignerOuvrierComponent } from './widgets/signalement/assigner-ouvrier
 import { TacheComponent } from './widgets/signalement/tache/tache.component';
 import { ListeDevisComponent } from './widgets/signalement/liste-devis/liste-devis.component';
 import { ProfileComponent } from './widgets/profile/profile.component';
+import { ListAutorityComponent } from './widgets/personnel/autorite/list-autority/list-autority.component';
+import { ListOuvrierComponent } from './widgets/personnel/ouvrier/list-ouvrier/list-ouvrier.component';
 
 const routes: Routes = [
   {
@@ -24,7 +26,9 @@ const routes: Routes = [
       { path: 'upload', component: UploadTesterComponent, canActivate: [AuthentificationGuard] },
       //personnel
       { path: 'addAutority', component: AddAutorityComponent, canActivate: [AuthentificationGuard] },
+      { path: 'listAutority', component: ListAutorityComponent, canActivate: [AuthentificationGuard] },
       { path: 'addOuvrier', component: AddOuvrierComponent, canActivate: [AuthentificationGuard] },
+      { path: 'listOuvrier', component: ListOuvrierComponent, canActivate: [AuthentificationGuard] },
       { path: 's-addOuvrier/:trackingId', component: AssignerOuvrierComponent, canActivate: [AuthentificationGuard] },
       // signalement
       { path: 'signalement', component: LesSignalementComponent, canActivate: [AuthentificationGuard] },

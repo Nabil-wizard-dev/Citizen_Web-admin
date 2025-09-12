@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { ModuleAuthModule } from './module-auth/module-auth.module';
-import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModuleAdminModule } from './module-admin/module-admin.module';
 import { AuthInterceptorService } from './module-auth/services/authInterceptor/auth-interceptor.service';
@@ -37,7 +37,11 @@ registerLocaleData(fr);
   
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }, provideNzI18n(fr_FR), provideAnimationsAsync(), provideHttpClient()],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
+    provideNzI18n(fr_FR), 
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent,]
 })
 export class AppModule { }

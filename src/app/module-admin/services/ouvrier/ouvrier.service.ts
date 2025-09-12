@@ -22,7 +22,7 @@ export class OuvrierService {
   }
 
   createOuvrier(Ouvrier: Ouvrier): Observable<Ouvrier> {
-    return this.http.post<Ouvrier>(`${this.apiUrl}`, Ouvrier);
+    return this.http.post<Ouvrier>(`${this.apiUrl}/add`, Ouvrier);
   }
 
   updateOuvrier(id: string, Ouvrier: Ouvrier): Observable<Ouvrier> {

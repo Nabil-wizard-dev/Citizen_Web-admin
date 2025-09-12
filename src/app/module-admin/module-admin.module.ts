@@ -29,6 +29,8 @@ import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { ListeDevisComponent } from './widgets/signalement/liste-devis/liste-devis.component';
 import { ProfileComponent } from './widgets/profile/profile.component';
 import { DevisComponent } from './widgets/signalement/devis/devis.component';
+import { ListAutorityComponent } from './widgets/personnel/autorite/list-autority/list-autority.component';
+import { ListOuvrierComponent } from './widgets/personnel/ouvrier/list-ouvrier/list-ouvrier.component';
 
 
 @NgModule({
@@ -53,6 +55,8 @@ import { DevisComponent } from './widgets/signalement/devis/devis.component';
     ListeDevisComponent,
     ProfileComponent,
     DevisComponent,
+    ListAutorityComponent,
+    ListOuvrierComponent,
      
   ],
   imports: [
