@@ -28,6 +28,7 @@ import { TacheComponent } from './widgets/signalement/tache/tache.component';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { ListeDevisComponent } from './widgets/signalement/liste-devis/liste-devis.component';
 import { ProfileComponent } from './widgets/profile/profile.component';
+import { DevisComponent } from './widgets/signalement/devis/devis.component';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { ProfileComponent } from './widgets/profile/profile.component';
     TacheComponent,
     ListeDevisComponent,
     ProfileComponent,
+    DevisComponent,
      
   ],
   imports: [

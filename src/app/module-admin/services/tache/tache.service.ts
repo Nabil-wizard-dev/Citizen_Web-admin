@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment.development';
 })
 export class TacheService {
 
-  private apiUrl = `${environment.apiUrl}/taches`;
+  private apiUrl = `${environment.apiUrl}/api/taches`;
 
   constructor(private http: HttpClient) { }
 

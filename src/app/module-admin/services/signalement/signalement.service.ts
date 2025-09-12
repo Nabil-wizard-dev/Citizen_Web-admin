@@ -17,6 +17,11 @@ export class SignalementService {
     return this.http.get<any>(`${this.apiUrl2}?page=${page}&size=${size}`);
   }
 
+  getSignalements2(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/all`);
+  }
+
+
   getSignalementById(id: string): Observable<Signalement> {
     return this.http.get<Signalement>(`${this.apiUrl}/${id}`);
   }
